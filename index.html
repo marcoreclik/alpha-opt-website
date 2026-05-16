@@ -1,10 +1,852 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>alphaOPT</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>alphaOPT — Operations Consulting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --bg:        #080808;
+      --surface:   #101010;
+      --border:    rgba(255,255,255,0.07);
+      --gold:      #c9a84c;
+      --gold-dim:  rgba(201,168,76,0.15);
+      --gold-glow: rgba(201,168,76,0.35);
+      --white:     #f0ede8;
+      --muted:     rgba(240,237,232,0.45);
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSOR ──────────────────────────────────────────── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0.5;
+    }
+
+    /* ─── CANVAS BACKGROUND ───────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────────── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(18px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      /* Replace the src with your actual logo PNG path */
+      height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .nav-logo img {
+      height: 28px;
+      filter: brightness(1.1);
+    }
+    /* Fallback text logo if no image */
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+    }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 0.5rem 1.2rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    /* ─── HERO ────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: 0.92;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+      max-width: 14ch;
+    }
+    .hero-headline em {
+      font-style: normal;
+      color: var(--gold);
+      -webkit-text-stroke: 0px;
+    }
+    .hero-sub {
+      margin-top: 2.5rem;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 40ch;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-actions {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--bg);
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-ghost {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--white); }
+    .btn-ghost::after { content: "→"; }
+    .hero-logo-large {
+      position: absolute;
+      right: 4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      /* Replace src with your actual logo path */
+      width: min(380px, 35vw);
+      opacity: 0.06;
+      pointer-events: none;
+      animation: fadeIn 1.5s 1s forwards;
+      filter: invert(0.9) sepia(1) saturate(0.4) hue-rotate(5deg);
+    }
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s 1.2s forwards;
+    }
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: var(--muted);
+      animation: lineGrow 1s 1.4s both;
+    }
+    @keyframes lineGrow { from { width: 0 } to { width: 40px } }
+
+    /* ─── SECTION BASE ────────────────────────────────────── */
+    section {
+      padding: 8rem 4rem;
+      position: relative;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 3rem;
+    }
+
+    /* ─── DIVIDER ─────────────────────────────────────────── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── STATS STRIP ─────────────────────────────────────── */
+    #stats {
+      padding: 4rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ─── SERVICES ────────────────────────────────────────── */
+    #services {
+      padding: 8rem 4rem;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .service-card {
+      background: var(--bg);
+      padding: 3rem 2.5rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .service-card:hover { background: var(--surface); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.16em;
+      margin-bottom: 1.5rem;
+    }
+    .service-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ─── APPROACH ────────────────────────────────────────── */
+    #approach {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8rem;
+      align-items: start;
+    }
+    .approach-left .section-title { margin-bottom: 1.5rem; }
+    .approach-body {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
+    }
+    .approach-steps {
+      list-style: none;
+      margin-top: 3rem;
+    }
+    .approach-steps li {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      margin-top: 0.1rem;
+      min-width: 2ch;
+    }
+    .step-text strong {
+      font-family: var(--font-body);
+      font-weight: 500;
+      color: var(--white);
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .step-text p {
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    /* ─── CONTACT ─────────────────────────────────────────── */
+    #contact {
+      text-align: center;
+      padding: 10rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+    #contact .section-label { text-align: center; }
+    #contact .section-title { text-align: center; margin-bottom: 1.5rem; }
+    .contact-sub {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 44ch;
+      margin: 0 auto 3rem;
+      line-height: 1.75;
+    }
+    .contact-email {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.8rem);
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.2s;
+      display: inline-block;
+    }
+    .contact-email:hover { opacity: 0.7; }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* reveal-on-scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav    { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      section, #stats, footer { padding: 4rem 2rem; }
+      #hero  { padding: 0 2rem; }
+      #stats { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      #approach { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-logo-large { display: none; }
+      #contact { padding: 6rem 2rem; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Operations Consulting</h1>
-  <p>Optimising business performance through quantitative research, discrete mathematics, and data-driven decision-making.</p>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Animated background canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="page-wrap">
+
+    <!-- ── NAV ─────────────────────────────────── -->
+    <nav id="nav">
+      <div class="nav-logo">
+        <!--
+          Replace the line below with your actual logo:
+          <img src="alphaopt-logo.png" alt="alphaOPT" />
+          
+          For now, using text fallback:
+        -->
+        <span class="nav-logo-text">alpha<span>OPT</span></span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Get in Touch</a>
+    </nav>
+
+    <!-- ── HERO ────────────────────────────────── -->
+    <section id="hero">
+      <p class="hero-tag">Quantitative Operations Consulting · Germany</p>
+      <h1 class="hero-headline">
+        We Find<br />the <em>Optimal</em><br />Solution.
+      </h1>
+      <p class="hero-sub">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Optimising business
+        performance through discrete mathematics, operations research, and rigorous
+        quantitative methods.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Start a Project</a>
+        <a href="#services" class="btn-ghost">Our Services</a>
+      </div>
+
+      <!-- Large watermark logo — replace src with your PNG -->
+      <img
+        src="alphaopt-logo.png"
+        alt=""
+        class="hero-logo-large"
+        aria-hidden="true"
+        onerror="this.style.display='none'"
+      />
+
+      <div class="hero-scroll-hint">
+        <span class="scroll-line"></span>
+        Scroll to explore
+      </div>
+    </section>
+
+    <!-- ── STATS ────────────────────────────────── -->
+    <div id="stats" class="reveal">
+      <div class="stat">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Solution Space Explored</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">01</div>
+        <div class="stat-label">Replace with a real stat</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">02</div>
+        <div class="stat-label">Another key metric</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">03</div>
+        <div class="stat-label">Years / Clients / etc.</div>
+      </div>
+    </div>
+
+    <!-- ── SERVICES ─────────────────────────────── -->
+    <section id="services">
+      <p class="section-label reveal">What we do</p>
+      <h2 class="section-title reveal">Our Services</h2>
+      <div class="services-grid">
+
+        <div class="service-card reveal">
+          <div class="service-num">01</div>
+          <h3 class="service-title">Operations Optimisation</h3>
+          <p class="service-desc">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
+            Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
+          </p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">02</div>
+          <h3 class="service-title">Mathematical Modelling</h3>
+          <p class="service-desc">
+            Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent
+            mauris. Fusce nec tellus sed augue semper porta. Mauris massa.
+          </p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">03</div>
+          <h3 class="service-title">Data Dashboards</h3>
+          <p class="service-desc">
+            Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora
+            torquent per conubia nostra, per inceptos himenaeos.
+          </p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">04</div>
+          <h3 class="service-title">Supply Chain & Logistics</h3>
+          <p class="service-desc">
+            Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius,
+            turpis molestie ultricies ultrices, lorem felis imperdiet ligula.
+          </p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">05</div>
+          <h3 class="service-title">Quantitative Research</h3>
+          <p class="service-desc">
+            Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna,
+            vitae ornare odio metus a mi. Morbi ac orci et nisl hendrerit.
+          </p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-num">06</div>
+          <h3 class="service-title">Custom Algorithms</h3>
+          <p class="service-desc">
+            Nullam varius, turpis molestie ultricies ultrices, lorem felis imperdiet
+            ligula, lobortis aliquet mauris enim purus. Nunc viverra imperdiet enim.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── APPROACH ──────────────────────────────── -->
+    <section id="approach">
+      <div class="approach-left reveal">
+        <p class="section-label">How we work</p>
+        <h2 class="section-title">Our Approach</h2>
+        <p class="approach-body">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris.
+        </p>
+        <p class="approach-body">
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+          eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+        </p>
+      </div>
+      <div class="approach-right">
+        <ul class="approach-steps">
+          <li class="reveal">
+            <span class="step-num">01</span>
+            <div class="step-text">
+              <strong>Problem Definition</strong>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus ante dapibus diam.</p>
+            </div>
+          </li>
+          <li class="reveal">
+            <span class="step-num">02</span>
+            <div class="step-text">
+              <strong>Data & Model Design</strong>
+              <p>Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.</p>
+            </div>
+          </li>
+          <li class="reveal">
+            <span class="step-num">03</span>
+            <div class="step-text">
+              <strong>Optimisation & Solving</strong>
+              <p>Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu.</p>
+            </div>
+          </li>
+          <li class="reveal">
+            <span class="step-num">04</span>
+            <div class="step-text">
+              <strong>Implementation & Dashboards</strong>
+              <p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── CONTACT ───────────────────────────────── -->
+    <section id="contact" class="reveal">
+      <p class="section-label">Ready to optimise?</p>
+      <h2 class="section-title">Let's Work Together</h2>
+      <p class="contact-sub">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Reach out and we will
+        get back to you within 24 hours.
+      </p>
+      <!-- Replace with your actual email -->
+      <a href="mailto:hello@alphaopt.de" class="contact-email">hello@alphaopt.de</a>
+    </section>
+
+    <!-- ── FOOTER ────────────────────────────────── -->
+    <footer>
+      <p class="footer-copy">© 2025 alphaOPT · Germany</p>
+      <ul class="footer-links">
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Impressum</a></li>
+        <li><a href="#">Datenschutz</a></li>
+      </ul>
+    </footer>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    /* ── CURSOR ─────────────────────────────────── */
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = -100, my = -100, rx = -100, ry = -100;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animate() {
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animate);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+        ring.style.opacity = '0';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        ring.style.opacity = '0.5';
+      });
+    });
+
+    /* ── CANVAS BACKGROUND ──────────────────────── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, nodes = [], RAF;
+      const NODE_COUNT  = 60;
+      const GOLD        = 'rgba(201,168,76,';
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function initNodes() {
+        nodes = [];
+        for (let i = 0; i < NODE_COUNT; i++) {
+          nodes.push({
+            x:  Math.random() * W,
+            y:  Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            r:  Math.random() * 1.5 + 0.5,
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(201,168,76,0.04)';
+        ctx.lineWidth   = 1;
+        const grid = 80;
+        for (let x = 0; x < W; x += grid) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+        }
+        for (let y = 0; y < H; y += grid) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+        }
+
+        // Move nodes
+        nodes.forEach(n => {
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < 0 || n.x > W) n.vx *= -1;
+          if (n.y < 0 || n.y > H) n.vy *= -1;
+        });
+
+        // Draw edges
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx   = nodes[i].x - nodes[j].x;
+            const dy   = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 160) {
+              const alpha = (1 - dist / 160) * 0.25;
+              ctx.beginPath();
+              ctx.strokeStyle = GOLD + alpha + ')';
+              ctx.lineWidth   = 0.6;
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw nodes
+        nodes.forEach(n => {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fillStyle = GOLD + '0.5)';
+          ctx.fill();
+        });
+
+        RAF = requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => { resize(); initNodes(); });
+      resize();
+      initNodes();
+      draw();
+    })();
+
+    /* ── NAV SCROLL ─────────────────────────────── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    /* ── REVEAL ON SCROLL ───────────────────────── */
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
