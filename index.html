@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── TOKENS ─────────────────────────────────────────── */
     :root {
       --bg:        #080808;
       --surface:   #101010;
@@ -24,7 +23,6 @@
       --font-body:    'DM Sans', sans-serif;
     }
 
-    /* ─── RESET ───────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -36,8 +34,7 @@
       overflow-x: hidden;
     }
 
-
-    /* ─── CANVAS BACKGROUND ───────────────────────────────── */
+    /* ─── CANVAS ─────────────────────────────────────────── */
     #bg-canvas {
       position: fixed;
       inset: 0;
@@ -46,13 +43,12 @@
       pointer-events: none;
     }
 
-    /* ─── LAYOUT ──────────────────────────────────────────── */
     .page-wrap {
       position: relative;
       z-index: 1;
     }
 
-    /* ─── NAV ─────────────────────────────────────────────── */
+    /* ─── NAV ────────────────────────────────────────────── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -69,25 +65,8 @@
       backdrop-filter: blur(18px);
       border-color: var(--border);
     }
-    .nav-logo {
-      /* Replace the src with your actual logo PNG path */
-      height: 28px;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .nav-logo img {
-      height: 28px;
-      filter: brightness(1.1);
-    }
-    /* Fallback text logo if no image */
-    .nav-logo-text {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      letter-spacing: 0.12em;
-      color: var(--white);
-    }
-    .nav-logo-text span { color: var(--gold); }
+    .nav-logo { height: 28px; display: flex; align-items: center; }
+    .nav-logo img { height: 28px; filter: brightness(1.1); }
     .nav-links {
       display: flex;
       gap: 2.5rem;
@@ -103,6 +82,43 @@
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--gold); }
+
+    /* ─── LANG TOGGLE ────────────────────────────────────── */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+    }
+    .lang-toggle button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .lang-toggle button.active {
+      background: var(--gold);
+      color: var(--bg);
+    }
+    .lang-toggle button:not(.active):hover {
+      color: var(--white);
+    }
     .nav-cta {
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -114,12 +130,9 @@
       text-decoration: none;
       transition: background 0.2s, color 0.2s;
     }
-    .nav-cta:hover {
-      background: var(--gold);
-      color: var(--bg);
-    }
+    .nav-cta:hover { background: var(--gold); color: var(--bg); }
 
-    /* ─── HERO ────────────────────────────────────────────── */
+    /* ─── HERO ───────────────────────────────────────────── */
     #hero {
       min-height: 100vh;
       display: flex;
@@ -149,11 +162,7 @@
       animation: fadeUp 0.8s 0.4s forwards;
       max-width: 14ch;
     }
-    .hero-headline em {
-      font-style: normal;
-      color: var(--gold);
-      -webkit-text-stroke: 0px;
-    }
+    .hero-headline em { font-style: normal; color: var(--gold); }
     .hero-sub {
       margin-top: 2.5rem;
       font-size: 1rem;
@@ -204,7 +213,6 @@
       right: 4rem;
       top: 50%;
       transform: translateY(-50%);
-      /* Replace src with your actual logo path */
       width: min(380px, 35vw);
       opacity: 0.06;
       pointer-events: none;
@@ -227,18 +235,14 @@
       animation: fadeIn 1s 1.2s forwards;
     }
     .scroll-line {
-      width: 40px;
-      height: 1px;
+      width: 40px; height: 1px;
       background: var(--muted);
       animation: lineGrow 1s 1.4s both;
     }
     @keyframes lineGrow { from { width: 0 } to { width: 40px } }
 
-    /* ─── SECTION BASE ────────────────────────────────────── */
-    section {
-      padding: 8rem 4rem;
-      position: relative;
-    }
+    /* ─── SECTION BASE ───────────────────────────────────── */
+    section { padding: 8rem 4rem; position: relative; }
     .section-label {
       font-family: var(--font-mono);
       font-size: 0.65rem;
@@ -256,14 +260,7 @@
       margin-bottom: 3rem;
     }
 
-    /* ─── DIVIDER ─────────────────────────────────────────── */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* ─── STATS STRIP ─────────────────────────────────────── */
+    /* ─── STATS ──────────────────────────────────────────── */
     #stats {
       padding: 4rem;
       display: grid;
@@ -272,10 +269,7 @@
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-    .stat {
-      padding: 2rem;
-      border-right: 1px solid var(--border);
-    }
+    .stat { padding: 2rem; border-right: 1px solid var(--border); }
     .stat:last-child { border-right: none; }
     .stat-num {
       font-family: var(--font-display);
@@ -293,10 +287,8 @@
       margin-top: 0.5rem;
     }
 
-    /* ─── SERVICES ────────────────────────────────────────── */
-    #services {
-      padding: 8rem 4rem;
-    }
+    /* ─── SERVICES ───────────────────────────────────────── */
+    #services { padding: 8rem 4rem; }
     .services-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -337,13 +329,9 @@
       color: var(--white);
       margin-bottom: 1rem;
     }
-    .service-desc {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
+    .service-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
 
-    /* ─── APPROACH ────────────────────────────────────────── */
+    /* ─── APPROACH ───────────────────────────────────────── */
     #approach {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -351,16 +339,8 @@
       align-items: start;
     }
     .approach-left .section-title { margin-bottom: 1.5rem; }
-    .approach-body {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.85;
-      margin-bottom: 1.5rem;
-    }
-    .approach-steps {
-      list-style: none;
-      margin-top: 3rem;
-    }
+    .approach-body { font-size: 0.95rem; color: var(--muted); line-height: 1.85; margin-bottom: 1.5rem; }
+    .approach-steps { list-style: none; margin-top: 3rem; }
     .approach-steps li {
       display: flex;
       gap: 1.5rem;
@@ -384,12 +364,9 @@
       display: block;
       margin-bottom: 0.3rem;
     }
-    .step-text p {
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
+    .step-text p { font-size: 0.83rem; color: var(--muted); }
 
-    /* ─── CONTACT ─────────────────────────────────────────── */
+    /* ─── CONTACT ────────────────────────────────────────── */
     #contact {
       text-align: center;
       padding: 10rem 4rem;
@@ -415,7 +392,7 @@
     }
     .contact-email:hover { opacity: 0.7; }
 
-    /* ─── FOOTER ──────────────────────────────────────────── */
+    /* ─── FOOTER ─────────────────────────────────────────── */
     footer {
       display: flex;
       justify-content: space-between;
@@ -423,17 +400,8 @@
       padding: 2rem 4rem;
       border-top: 1px solid var(--border);
     }
-    .footer-copy {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
     .footer-links a {
       font-family: var(--font-mono);
       font-size: 0.65rem;
@@ -444,7 +412,7 @@
     }
     .footer-links a:hover { color: var(--gold); }
 
-    /* ─── ANIMATIONS ──────────────────────────────────────── */
+    /* ─── ANIMATIONS ─────────────────────────────────────── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -453,24 +421,19 @@
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-
-    /* reveal-on-scroll */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
     @media (max-width: 900px) {
-      nav    { padding: 1.2rem 2rem; }
+      nav { padding: 1.2rem 2rem; }
       .nav-links { display: none; }
       section, #stats, footer { padding: 4rem 2rem; }
-      #hero  { padding: 0 2rem; }
+      #hero { padding: 0 2rem; }
       #stats { grid-template-columns: 1fr 1fr; }
       .services-grid { grid-template-columns: 1fr; }
       #approach { grid-template-columns: 1fr; gap: 3rem; }
@@ -481,221 +444,315 @@
 </head>
 <body>
 
-
-  <!-- Animated background canvas -->
   <canvas id="bg-canvas"></canvas>
 
   <div class="page-wrap">
 
-    <!-- ── NAV ─────────────────────────────────── -->
+    <!-- NAV -->
     <nav id="nav">
       <div class="nav-logo">
         <img src="alphaopt-logo.png" alt="alphaOPT" />
       </div>
       <ul class="nav-links">
-        <li><a href="#services">Services</a></li>
-        <li><a href="#approach">Approach</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#services" data-i18n="nav.services"></a></li>
+        <li><a href="#approach" data-i18n="nav.approach"></a></li>
+        <li><a href="#contact" data-i18n="nav.contact"></a></li>
       </ul>
-      <a href="#contact" class="nav-cta">Get in Touch</a>
+      <div class="nav-right">
+        <div class="lang-toggle">
+          <button id="btn-de" class="active" onclick="setLang('de')">DE</button>
+          <button id="btn-en" onclick="setLang('en')">EN</button>
+        </div>
+        <a href="#contact" class="nav-cta" data-i18n="nav.cta"></a>
+      </div>
     </nav>
 
-    <!-- ── HERO ────────────────────────────────── -->
+    <!-- HERO -->
     <section id="hero">
-      <p class="hero-tag">Quantitative Operations Consulting · Germany</p>
-      <h1 class="hero-headline">
-        We Find<br />the <em>Optimal</em><br />Solution.
-      </h1>
-      <p class="hero-sub">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Optimising business
-        performance through discrete mathematics, operations research, and rigorous
-        quantitative methods.
-      </p>
+      <p class="hero-tag" data-i18n="hero.tag"></p>
+      <h1 class="hero-headline" data-i18n-html="hero.headline"></h1>
+      <p class="hero-sub" data-i18n="hero.sub"></p>
       <div class="hero-actions">
-        <a href="#contact" class="btn-primary">Start a Project</a>
-        <a href="#services" class="btn-ghost">Our Services</a>
+        <a href="#contact" class="btn-primary" data-i18n="hero.cta1"></a>
+        <a href="#services" class="btn-ghost" data-i18n="hero.cta2"></a>
       </div>
-
-      <!-- Large watermark logo — replace src with your PNG -->
-      <img
-        src="alphaopt-logo.png"
-        alt=""
-        class="hero-logo-large"
-        aria-hidden="true"
-        onerror="this.style.display='none'"
-      />
-
+      <img src="alphaopt-logo.png" alt="" class="hero-logo-large" aria-hidden="true" onerror="this.style.display='none'" />
       <div class="hero-scroll-hint">
         <span class="scroll-line"></span>
-        Scroll to explore
+        <span data-i18n="hero.scroll"></span>
       </div>
     </section>
 
-    <!-- ── STATS ────────────────────────────────── -->
+    <!-- STATS -->
     <div id="stats" class="reveal">
       <div class="stat">
         <div class="stat-num">∞</div>
-        <div class="stat-label">Solution Space Explored</div>
+        <div class="stat-label" data-i18n="stats.s1"></div>
       </div>
       <div class="stat">
         <div class="stat-num">01</div>
-        <div class="stat-label">Replace with a real stat</div>
+        <div class="stat-label" data-i18n="stats.s2"></div>
       </div>
       <div class="stat">
         <div class="stat-num">02</div>
-        <div class="stat-label">Another key metric</div>
+        <div class="stat-label" data-i18n="stats.s3"></div>
       </div>
       <div class="stat">
         <div class="stat-num">03</div>
-        <div class="stat-label">Years / Clients / etc.</div>
+        <div class="stat-label" data-i18n="stats.s4"></div>
       </div>
     </div>
 
-    <!-- ── SERVICES ─────────────────────────────── -->
+    <!-- SERVICES -->
     <section id="services">
-      <p class="section-label reveal">What we do</p>
-      <h2 class="section-title reveal">Our Services</h2>
+      <p class="section-label reveal" data-i18n="services.label"></p>
+      <h2 class="section-title reveal" data-i18n="services.title"></h2>
       <div class="services-grid">
-
         <div class="service-card reveal">
           <div class="service-num">01</div>
-          <h3 class="service-title">Operations Optimisation</h3>
-          <p class="service-desc">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
-            Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
-          </p>
+          <h3 class="service-title" data-i18n="services.c1.title"></h3>
+          <p class="service-desc" data-i18n="services.c1.desc"></p>
         </div>
-
         <div class="service-card reveal">
           <div class="service-num">02</div>
-          <h3 class="service-title">Mathematical Modelling</h3>
-          <p class="service-desc">
-            Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent
-            mauris. Fusce nec tellus sed augue semper porta. Mauris massa.
-          </p>
+          <h3 class="service-title" data-i18n="services.c2.title"></h3>
+          <p class="service-desc" data-i18n="services.c2.desc"></p>
         </div>
-
         <div class="service-card reveal">
           <div class="service-num">03</div>
-          <h3 class="service-title">Data Dashboards</h3>
-          <p class="service-desc">
-            Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora
-            torquent per conubia nostra, per inceptos himenaeos.
-          </p>
+          <h3 class="service-title" data-i18n="services.c3.title"></h3>
+          <p class="service-desc" data-i18n="services.c3.desc"></p>
         </div>
-
         <div class="service-card reveal">
           <div class="service-num">04</div>
-          <h3 class="service-title">Supply Chain & Logistics</h3>
-          <p class="service-desc">
-            Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius,
-            turpis molestie ultricies ultrices, lorem felis imperdiet ligula.
-          </p>
+          <h3 class="service-title" data-i18n="services.c4.title"></h3>
+          <p class="service-desc" data-i18n="services.c4.desc"></p>
         </div>
-
         <div class="service-card reveal">
           <div class="service-num">05</div>
-          <h3 class="service-title">Quantitative Research</h3>
-          <p class="service-desc">
-            Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna,
-            vitae ornare odio metus a mi. Morbi ac orci et nisl hendrerit.
-          </p>
+          <h3 class="service-title" data-i18n="services.c5.title"></h3>
+          <p class="service-desc" data-i18n="services.c5.desc"></p>
         </div>
-
         <div class="service-card reveal">
           <div class="service-num">06</div>
-          <h3 class="service-title">Custom Algorithms</h3>
-          <p class="service-desc">
-            Nullam varius, turpis molestie ultricies ultrices, lorem felis imperdiet
-            ligula, lobortis aliquet mauris enim purus. Nunc viverra imperdiet enim.
-          </p>
+          <h3 class="service-title" data-i18n="services.c6.title"></h3>
+          <p class="service-desc" data-i18n="services.c6.desc"></p>
         </div>
-
       </div>
     </section>
 
-    <!-- ── APPROACH ──────────────────────────────── -->
+    <!-- APPROACH -->
     <section id="approach">
       <div class="approach-left reveal">
-        <p class="section-label">How we work</p>
-        <h2 class="section-title">Our Approach</h2>
-        <p class="approach-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris.
-        </p>
-        <p class="approach-body">
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-          eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-        </p>
+        <p class="section-label" data-i18n="approach.label"></p>
+        <h2 class="section-title" data-i18n="approach.title"></h2>
+        <p class="approach-body" data-i18n="approach.body1"></p>
+        <p class="approach-body" data-i18n="approach.body2"></p>
       </div>
       <div class="approach-right">
         <ul class="approach-steps">
           <li class="reveal">
             <span class="step-num">01</span>
             <div class="step-text">
-              <strong>Problem Definition</strong>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus ante dapibus diam.</p>
+              <strong data-i18n="approach.s1.title"></strong>
+              <p data-i18n="approach.s1.desc"></p>
             </div>
           </li>
           <li class="reveal">
             <span class="step-num">02</span>
             <div class="step-text">
-              <strong>Data & Model Design</strong>
-              <p>Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.</p>
+              <strong data-i18n="approach.s2.title"></strong>
+              <p data-i18n="approach.s2.desc"></p>
             </div>
           </li>
           <li class="reveal">
             <span class="step-num">03</span>
             <div class="step-text">
-              <strong>Optimisation & Solving</strong>
-              <p>Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu.</p>
+              <strong data-i18n="approach.s3.title"></strong>
+              <p data-i18n="approach.s3.desc"></p>
             </div>
           </li>
           <li class="reveal">
             <span class="step-num">04</span>
             <div class="step-text">
-              <strong>Implementation & Dashboards</strong>
-              <p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius.</p>
+              <strong data-i18n="approach.s4.title"></strong>
+              <p data-i18n="approach.s4.desc"></p>
             </div>
           </li>
         </ul>
       </div>
     </section>
 
-    <!-- ── CONTACT ───────────────────────────────── -->
+    <!-- CONTACT -->
     <section id="contact" class="reveal">
-      <p class="section-label">Ready to optimise?</p>
-      <h2 class="section-title">Let's Work Together</h2>
-      <p class="contact-sub">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Reach out and we will
-        get back to you within 24 hours.
-      </p>
-      <!-- Replace with your actual email -->
+      <p class="section-label" data-i18n="contact.label"></p>
+      <h2 class="section-title" data-i18n="contact.title"></h2>
+      <p class="contact-sub" data-i18n="contact.sub"></p>
       <a href="mailto:hello@alphaopt.de" class="contact-email">hello@alphaopt.de</a>
     </section>
 
-    <!-- ── FOOTER ────────────────────────────────── -->
+    <!-- FOOTER -->
     <footer>
-      <p class="footer-copy">© 2025 alphaOPT · Germany</p>
+      <p class="footer-copy" data-i18n="footer.copy"></p>
       <ul class="footer-links">
         <li><a href="https://www.linkedin.com/company/alphaopt" target="_blank">LinkedIn</a></li>
-        <li><a href="#">Impressum</a></li>
-        <li><a href="#">Datenschutz</a></li>
+        <li><a href="#" data-i18n="footer.impressum"></a></li>
+        <li><a href="#" data-i18n="footer.datenschutz"></a></li>
       </ul>
     </footer>
 
-  </div><!-- /page-wrap -->
+  </div>
 
   <script>
+    /* ── TRANSLATIONS ───────────────────────────────────── */
+    const i18n = {
+      de: {
+        "nav.services":    "Leistungen",
+        "nav.approach":    "Vorgehen",
+        "nav.contact":     "Kontakt",
+        "nav.cta":         "Projekt starten",
 
-    /* ── CANVAS BACKGROUND ──────────────────────── */
+        "hero.tag":        "Quantitatives Operations Consulting · Deutschland",
+        "hero.headline":   "Wir finden die<br /><em>optimale</em><br />Lösung.",
+        "hero.sub":        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Wir optimieren Ihre Geschäftsprozesse durch diskrete Mathematik, Operations Research und rigorose quantitative Methoden.",
+        "hero.cta1":       "Projekt starten",
+        "hero.cta2":       "Unsere Leistungen",
+        "hero.scroll":     "Scrollen",
+
+        "stats.s1":        "Lösungsraum erkundet",
+        "stats.s2":        "Stat ersetzen",
+        "stats.s3":        "Weitere Kennzahl",
+        "stats.s4":        "Jahre / Kunden / etc.",
+
+        "services.label":  "Was wir tun",
+        "services.title":  "Unsere Leistungen",
+        "services.c1.title": "Operations-Optimierung",
+        "services.c1.desc":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.",
+        "services.c2.title": "Mathematische Modellierung",
+        "services.c2.desc":  "Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.",
+        "services.c3.title": "Daten-Dashboards",
+        "services.c3.desc":  "Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.",
+        "services.c4.title": "Supply Chain & Logistik",
+        "services.c4.desc":  "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis molestie ultricies ultrices.",
+        "services.c5.title": "Quantitative Forschung",
+        "services.c5.desc":  "Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna, vitae ornare odio metus a mi.",
+        "services.c6.title": "Individuelle Algorithmen",
+        "services.c6.desc":  "Nullam varius, turpis molestie ultricies ultrices, lorem felis imperdiet ligula, lobortis aliquet mauris enim purus.",
+
+        "approach.label":  "Wie wir arbeiten",
+        "approach.title":  "Unser Vorgehen",
+        "approach.body1":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+        "approach.body2":  "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+        "approach.s1.title": "Problemdefinition",
+        "approach.s1.desc":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus ante dapibus diam.",
+        "approach.s2.title": "Daten & Modelldesign",
+        "approach.s2.desc":  "Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.",
+        "approach.s3.title": "Optimierung & Lösung",
+        "approach.s3.desc":  "Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu.",
+        "approach.s4.title": "Implementierung & Dashboards",
+        "approach.s4.desc":  "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius.",
+
+        "contact.label":   "Bereit zur Optimierung?",
+        "contact.title":   "Gemeinsam arbeiten",
+        "contact.sub":     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Schreiben Sie uns und wir melden uns innerhalb von 24 Stunden zurück.",
+
+        "footer.copy":       "© 2025 alphaOPT · Deutschland",
+        "footer.impressum":  "Impressum",
+        "footer.datenschutz":"Datenschutz",
+      },
+      en: {
+        "nav.services":    "Services",
+        "nav.approach":    "Approach",
+        "nav.contact":     "Contact",
+        "nav.cta":         "Get in Touch",
+
+        "hero.tag":        "Quantitative Operations Consulting · Germany",
+        "hero.headline":   "We Find<br />the <em>Optimal</em><br />Solution.",
+        "hero.sub":        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Optimising business performance through discrete mathematics, operations research, and rigorous quantitative methods.",
+        "hero.cta1":       "Start a Project",
+        "hero.cta2":       "Our Services",
+        "hero.scroll":     "Scroll to explore",
+
+        "stats.s1":        "Solution Space Explored",
+        "stats.s2":        "Replace with a real stat",
+        "stats.s3":        "Another key metric",
+        "stats.s4":        "Years / Clients / etc.",
+
+        "services.label":  "What we do",
+        "services.title":  "Our Services",
+        "services.c1.title": "Operations Optimisation",
+        "services.c1.desc":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.",
+        "services.c2.title": "Mathematical Modelling",
+        "services.c2.desc":  "Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta.",
+        "services.c3.title": "Data Dashboards",
+        "services.c3.desc":  "Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.",
+        "services.c4.title": "Supply Chain & Logistics",
+        "services.c4.desc":  "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis molestie ultricies ultrices.",
+        "services.c5.title": "Quantitative Research",
+        "services.c5.desc":  "Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna, vitae ornare odio metus a mi.",
+        "services.c6.title": "Custom Algorithms",
+        "services.c6.desc":  "Nullam varius, turpis molestie ultricies ultrices, lorem felis imperdiet ligula, lobortis aliquet mauris enim purus.",
+
+        "approach.label":  "How we work",
+        "approach.title":  "Our Approach",
+        "approach.body1":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+        "approach.body2":  "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+        "approach.s1.title": "Problem Definition",
+        "approach.s1.desc":  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed cursus ante dapibus diam.",
+        "approach.s2.title": "Data & Model Design",
+        "approach.s2.desc":  "Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.",
+        "approach.s3.title": "Optimisation & Solving",
+        "approach.s3.desc":  "Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu.",
+        "approach.s4.title": "Implementation & Dashboards",
+        "approach.s4.desc":  "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius.",
+
+        "contact.label":   "Ready to optimise?",
+        "contact.title":   "Let's Work Together",
+        "contact.sub":     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Reach out and we will get back to you within 24 hours.",
+
+        "footer.copy":       "© 2025 alphaOPT · Germany",
+        "footer.impressum":  "Impressum",
+        "footer.datenschutz":"Datenschutz",
+      }
+    };
+
+    /* ── LANGUAGE SWITCHER ──────────────────────────────── */
+    let currentLang = 'de';
+
+    function setLang(lang) {
+      currentLang = lang;
+      const t = i18n[lang];
+
+      // Plain text elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+
+      // HTML elements (headline with <br> and <em>)
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+
+      // Toggle button active state
+      document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+      // Update html lang attribute
+      document.documentElement.lang = lang;
+    }
+
+    // Init with German on load
+    setLang('de');
+
+    /* ── CANVAS BACKGROUND ──────────────────────────────── */
     (function () {
       const canvas = document.getElementById('bg-canvas');
       const ctx = canvas.getContext('2d');
-      let W, H, nodes = [], RAF;
-      const NODE_COUNT  = 60;
-      const GOLD        = 'rgba(201,168,76,';
+      let W, H, nodes = [];
+      const NODE_COUNT = 60;
+      const GOLD = 'rgba(201,168,76,';
 
       function resize() {
         W = canvas.width  = window.innerWidth;
@@ -717,10 +774,8 @@
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
-
-        // Draw grid lines
         ctx.strokeStyle = 'rgba(201,168,76,0.04)';
-        ctx.lineWidth   = 1;
+        ctx.lineWidth = 1;
         const grid = 80;
         for (let x = 0; x < W; x += grid) {
           ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
@@ -728,41 +783,33 @@
         for (let y = 0; y < H; y += grid) {
           ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
         }
-
-        // Move nodes
         nodes.forEach(n => {
           n.x += n.vx; n.y += n.vy;
           if (n.x < 0 || n.x > W) n.vx *= -1;
           if (n.y < 0 || n.y > H) n.vy *= -1;
         });
-
-        // Draw edges
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
-            const dx   = nodes[i].x - nodes[j].x;
-            const dy   = nodes[i].y - nodes[j].y;
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 160) {
-              const alpha = (1 - dist / 160) * 0.25;
               ctx.beginPath();
-              ctx.strokeStyle = GOLD + alpha + ')';
-              ctx.lineWidth   = 0.6;
+              ctx.strokeStyle = GOLD + ((1 - dist / 160) * 0.25) + ')';
+              ctx.lineWidth = 0.6;
               ctx.moveTo(nodes[i].x, nodes[i].y);
               ctx.lineTo(nodes[j].x, nodes[j].y);
               ctx.stroke();
             }
           }
         }
-
-        // Draw nodes
         nodes.forEach(n => {
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
           ctx.fillStyle = GOLD + '0.5)';
           ctx.fill();
         });
-
-        RAF = requestAnimationFrame(draw);
+        requestAnimationFrame(draw);
       }
 
       window.addEventListener('resize', () => { resize(); initNodes(); });
@@ -771,14 +818,13 @@
       draw();
     })();
 
-    /* ── NAV SCROLL ─────────────────────────────── */
+    /* ── NAV SCROLL ─────────────────────────────────────── */
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 60);
     });
 
-    /* ── REVEAL ON SCROLL ───────────────────────── */
-    const reveals = document.querySelectorAll('.reveal');
+    /* ── REVEAL ON SCROLL ───────────────────────────────── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
         if (e.isIntersecting) {
@@ -787,7 +833,7 @@
         }
       });
     }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
