@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impressum — alphaOPT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #080808;
+      --surface:   #101010;
+      --border:    rgba(255,255,255,0.07);
+      --gold:      #c9a84c;
+      --white:     #f0ede8;
+      --muted:     rgba(240,237,232,0.45);
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── CANVAS ──────────────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { height: 28px; display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 28px; filter: brightness(1.1); }
+    .nav-back {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .nav-back::before { content: "←"; }
+    .nav-back:hover { color: var(--gold); }
+
+    /* ─── MAIN CONTENT ────────────────────────────────────── */
+    .legal-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 10rem 2rem 8rem;
+    }
+
+    .legal-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .legal-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 4rem;
+    }
+
+    .legal-section {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+    }
+    .legal-section:last-of-type {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4rem;
+    }
+
+    .legal-section h2 {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .legal-section p,
+    .legal-section address {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.85;
+      font-style: normal;
+      margin-bottom: 0.6rem;
+    }
+
+    .legal-section a {
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .legal-section a:hover { opacity: 0.7; }
+
+    .legal-section p strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+    }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      footer { padding: 2rem; }
+      .legal-wrap { padding: 8rem 1.5rem 6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="alphaopt-logo.png" alt="alphaOPT" />
+    </a>
+    <a href="index.html" class="nav-back">Zurück zur Startseite</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="legal-wrap">
+
+    <p class="legal-tag">Rechtliches</p>
+    <h1 class="legal-title">Impressum</h1>
+
+    <div class="legal-section">
+      <h2>Angaben gemäß § 5 TMG</h2>
+      <address>
+        <strong>alphaOPT</strong><br />
+        <!-- Replace with your full name -->
+        Vorname Nachname<br />
+        <!-- Replace with your street address -->
+        Musterstraße 1<br />
+        <!-- Replace with your postal code and city -->
+        12345 Musterstadt<br />
+        Deutschland
+      </address>
+    </div>
+
+    <div class="legal-section">
+      <h2>Kontakt</h2>
+      <p>E-Mail: <a href="mailto:hello@alphaopt.de">hello@alphaopt.de</a></p>
+      <!-- Add phone number if you wish, otherwise remove the line below -->
+      <!-- <p>Telefon: +49 (0) 000 000000</p> -->
+    </div>
+
+    <div class="legal-section">
+      <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+      <address>
+        <!-- Replace with your full name and address -->
+        Vorname Nachname<br />
+        Musterstraße 1<br />
+        12345 Musterstadt
+      </address>
+    </div>
+
+    <div class="legal-section">
+      <h2>Gewerbeanmeldung</h2>
+      <p>
+        Das Gewerbe ist noch nicht angemeldet. Die Gewerbeanmeldung erfolgt in Kürze.
+        <!-- Once registered, replace the above with something like:
+        Registriert beim Gewerbeamt [Stadt], Registernummer: XXXXXXXX -->
+      </p>
+    </div>
+
+    <div class="legal-section">
+      <h2>Haftungsausschluss</h2>
+      <p>
+        Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die
+        Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine
+        Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene
+        Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.
+      </p>
+    </div>
+
+    <div class="legal-section">
+      <h2>Haftung für Links</h2>
+      <p>
+        Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir
+        keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine
+        Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige
+        Anbieter oder Betreiber der Seiten verantwortlich.
+      </p>
+    </div>
+
+    <div class="legal-section">
+      <h2>Urheberrecht</h2>
+      <p>
+        Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten
+        unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung,
+        Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts
+        bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+      </p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-copy">© 2025 alphaOPT · Deutschland</p>
+    <ul class="footer-links">
+      <li><a href="https://www.linkedin.com/company/alphaopt" target="_blank">LinkedIn</a></li>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    /* ── CANVAS BACKGROUND ──────────────────────────────── */
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, nodes = [];
+      const NODE_COUNT = 40;
+      const GOLD = 'rgba(201,168,76,';
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      function initNodes() {
+        nodes = [];
+        for (let i = 0; i < NODE_COUNT; i++) {
+          nodes.push({ x: Math.random()*W, y: Math.random()*H, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, r: Math.random()*1.5+0.5 });
+        }
+      }
+      function draw() {
+        ctx.clearRect(0,0,W,H);
+        ctx.strokeStyle='rgba(201,168,76,0.04)'; ctx.lineWidth=1;
+        for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+        for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+        nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
+        for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<160){ctx.beginPath();ctx.strokeStyle=GOLD+((1-d/160)*0.2)+')';ctx.lineWidth=0.6;ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke();}}}
+        nodes.forEach(n=>{ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=GOLD+'0.4)';ctx.fill();});
+        requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize',()=>{resize();initNodes();});
+      resize(); initNodes(); draw();
+    })();
+  </script>
+</body>
+</html>
